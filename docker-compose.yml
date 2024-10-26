@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: gis_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yourpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  hadoop:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8
+    environment:
+      - CLUSTER_NAME=test
+    ports:
+      - "9870:9870"
+
+  airflow:
+    image: puckel/docker-airflow
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
+      AIRFLOW__CORE__DAG_DIR_LIST_INTERVAL: 10
+      AIRFLOW__SCHEDULAR_MIN_FILE_PROCESS_INTERVAL: 10
+    volumes:
+      - ./scripts:/usr/local/airflow/dags
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+
+  spark:
+    image: bitnami/spark
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:

@@ -1,0 +1,7 @@
+requests
+pandas
+numpy
+matplotlib
+psycopg2-binary
+apache-airflow
+pyspark
